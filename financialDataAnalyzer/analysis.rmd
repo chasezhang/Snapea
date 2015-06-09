@@ -1,0 +1,36 @@
+---
+title: "FinanicalDataCorrelationAnalysis"
+author: "Zhi Zhang"
+date: "Tuesday, June 09, 2015"
+output: html_document
+---
+
+
+```{r}
+# include library
+library(ggvis)
+
+# load market data
+marketData <- read.csv(file="601988_mkt.csv", header=TRUE, sep=",")
+
+# convert date string to date object
+marketData[[5]] <- as.Date(marketData[[5]]) 
+
+# plot market data
+marketData %>% ggvis(~tradeDate, ~closePrice) %>% layer_lines()
+
+# load news data
+newsData <- read.csv(file="601988_news.csv", header=TRUE, sep=",")
+
+# convert date string to date object
+newsData[[9]] <- as.Date(newsData[[9]]) 
+
+# scatter plot news sentimental score data
+newsData %>% ggvis(~newsPublishTime, ~sentimentScore) %>% layer_points(fill = ~factor(sentiment)) 
+
+# histograms of news
+newsData %>% ggvis(~newsPublishTime) %>% layer_histograms()
+
+```
+
+

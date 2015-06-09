@@ -7,13 +7,15 @@ HTTP_AUTHORIZATION_ERROR = 401
 class Client:
     domain = 'api.wmcloud.com'
     port = 443
-    token = ''
+    token = '83fa105b3c49a4cfecdb7000cac6fbb80cca8618a8e9b17dc92905a767771040'
     httpClient = None
     def __init__( self ):
         self.httpClient = httplib.HTTPSConnection(self.domain, self.port)
+        
     def __del__( self ):
         if self.httpClient is not None:
             self.httpClient.close()
+            
     def encodepath(self, path):
         #转换参数的编码
         start=0
@@ -41,8 +43,23 @@ class Client:
                 start=n
             i=path.find('=',start)
         return re
-    def init(self, token):
-        self.token=token
+    #def init(self, token):
+    #    self.token=token
+    
+    # Fetch market data by ticker
+    # @params
+    # ticker
+    # beginDate, endDate, date format: yyyymmdd
+    def getMarketDataByTicker(self, ticker, beginDate, endDate):
+        apiUrl = "/api/market/getMktEqud.json?"
+        path = apiUrl + "field=" + "&beginDate=" + beginDate + "&endDate=" + endDate + "&ticker=" + ticker
+        return self.getData(path)
+    
+    def getNewsByTicker(self, ticker, beginDate, endDate, exchangeCD):
+        apiUrl = "/api/subject/getNewsByTickers.json?"
+        path = apiUrl + "field=" + "&beginDate=" + beginDate + "&endDate=" + endDate + "&ticker=" + ticker + "&exchangeCD=" + exchangeCD
+        return self.getData(path)
+        
     def getData(self, path):
         result = None
         path='/data'+path
